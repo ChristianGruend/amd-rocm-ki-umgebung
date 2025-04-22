@@ -19,7 +19,7 @@ Dieses Repository enthält eine Docker-Compose-Konfiguration für eine umfassend
 
 1. Klonen Sie das Repository:
    ```bash
-   git clone https://github.com/IHR_USERNAME/amd-rocm-ki-umgebung.git
+   git clone https://github.com/ChristianGruend/AMD-ROCm-KI-Umgebung.git
    cd amd-rocm-ki-umgebung
    ```
 
