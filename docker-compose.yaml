@@ -1,0 +1,54 @@
+services:
+  ollama-rocm:
+    image: ollama/ollama:rocm
+    container_name: ollama-amd
+    devices:
+      - "/dev/kfd:/dev/kfd"
+      - "/dev/dri:/dev/dri"
+    environment:
+      - HIP_VISIBLE_DEVICES=0
+      - HSA_OVERRIDE_GFX_VERSION=10.3.0
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama-root:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "serve"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  pytorch-rocm:
+    image: rocm/rocm-terminal:5.4
+    container_name: pytorch-amd
+    devices:
+      - "/dev/kfd:/dev/kfd"
+      - "/dev/dri:/dev/dri"
+    environment:
+      - HIP_VISIBLE_DEVICES=0
+    volumes:
+      - ./:/workspace
+    working_dir: /workspace
+    command: sleep infinity
+
+  jupyter-rocm:
+    image: rocm/rocm-terminal:5.4
+    container_name: jupyter-amd
+    user: root
+    devices:
+      - "/dev/kfd:/dev/kfd"
+      - "/dev/dri:/dev/dri"
+    environment:
+      - JUPYTER_TOKEN=amd123
+      - HIP_VISIBLE_DEVICES=0
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./:/workspace
+      - jupyter-runtime:/root/.local/share/jupyter
+    command: |
+      bash -c "apt-get update && apt-get install -y python3-pip && pip install jupyter jupyterlab && jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root"
+
+volumes:
+  ollama-root:
+  jupyter-runtime:
